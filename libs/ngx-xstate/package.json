@@ -1,6 +1,7 @@
 {
   "name": "ngx-xstate",
   "version": "0.0.2",
+  "description": "XState utilities for Angular",
   "keywords": [
     "angular",
     "xstate"

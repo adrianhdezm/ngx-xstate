@@ -1,6 +1,8 @@
 {
   "name": "ngx-xstate",
   "version": "0.0.2",
+  "description": "XState utilities for Angular",
+  "author": "Adrian Hernandez-Mendez",
   "license": "MIT",
   "scripts": {
     "release": "ts-node scripts/release.ts"
