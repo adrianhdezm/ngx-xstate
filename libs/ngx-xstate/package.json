@@ -2,6 +2,10 @@
   "name": "ngx-xstate",
   "version": "0.0.6",
   "description": "XState utilities for Angular",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adrianhdezm/ngx-xstate"
+  },
   "license": "MIT",
   "keywords": [
     "angular",

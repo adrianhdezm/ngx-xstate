@@ -98,7 +98,7 @@ export const dataMachine = createMachine({
 export class AppComponent {
   http = inject(HttpClient);
 
-  actor = inject(XStateService).useMachine<typeof dataMachine>(dataMachine, {
+  actor = inject(XStateService<typeof dataMachine>).useMachine(dataMachine, {
     services: {
       fetchData: () => (send) => {
         this.http.get<Record<string, string>[]>('https://jsonplaceholder.typicode.com/posts').subscribe((data) => {

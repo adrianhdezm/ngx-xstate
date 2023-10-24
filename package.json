@@ -4,6 +4,10 @@
   "description": "XState utilities for Angular",
   "author": "Adrian Hernandez-Mendez",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adrianhdezm/ngx-xstate"
+  },
   "scripts": {
     "release": "ts-node scripts/release.ts"
   },
