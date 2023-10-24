@@ -25,16 +25,14 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { NgxXstateModule, XStateService } from 'ngx-xstate';
 import { createMachine } from 'xstate';
 
+type Data = Record<string, unknown>;
+
 interface DataMachineContext {
-  data: Record<string, unknown>[];
+  data: Data[];
   error: Error | null;
 }
 
-type DataMachineEvent =
-  | { type: 'FETCH' }
-  | { type: 'RETRY' }
-  | { type: 'LOADED'; data: Record<string, unknown>[] }
-  | { type: 'ERROR'; message: string };
+type DataMachineEvent = { type: 'FETCH' } | { type: 'RETRY' } | { type: 'LOADED'; data: Data[] } | { type: 'ERROR'; message: string };
 
 export const dataMachine = createMachine({
   id: 'dataMachine',
@@ -101,7 +99,7 @@ export class AppComponent {
   actor = inject(XStateService<typeof dataMachine>).useMachine(dataMachine, {
     services: {
       fetchData: () => (send) => {
-        this.http.get<Record<string, string>[]>('https://jsonplaceholder.typicode.com/posts').subscribe((data) => {
+        this.http.get<Data[]>('https://jsonplaceholder.typicode.com/posts').subscribe((data) => {
           return send({
             type: 'LOADED',
             data,
