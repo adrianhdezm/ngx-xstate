@@ -8,5 +8,5 @@
       {{ item['title'] }}
     </div>
   </ng-container>
-  <ng-container *ngSwitchCase="vm.state?.matches('failure')">{{ vm.state.context.error?.message }}</ng-container>
+  <ng-container *ngSwitchCase="vm.state.matches('failure')">{{ vm.state.context.error?.message }}</ng-container>
 </ng-container>

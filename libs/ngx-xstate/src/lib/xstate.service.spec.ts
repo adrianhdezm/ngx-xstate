@@ -39,7 +39,7 @@ describe('XStateService', () => {
     });
 
     // Use the machine with the service
-    const { state$, send, stop } = service.useMachine<typeof testMachine>(testMachine);
+    const { state$, send, service: actor } = service.useMachine<typeof testMachine>(testMachine);
 
     // Subscribe to state updates and check the transitions
     state$.subscribe((state) => {
@@ -48,7 +48,7 @@ describe('XStateService', () => {
       } else if (state.matches('running')) {
         send({ type: 'STOP' });
       } else if (state.matches('stopped')) {
-        stop();
+        actor.stop();
         done();
       }
     });
