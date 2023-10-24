@@ -1,6 +1,11 @@
 {
   "name": "ngx-xstate",
   "version": "0.0.2",
+  "keywords": [
+    "angular",
+    "xstate"
+  ],
+  "author": "Adrian Hernandez-Mendez",
   "peerDependencies": {
     "@angular/common": "^16.1.0",
     "@angular/core": "^16.1.0",
