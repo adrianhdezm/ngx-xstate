@@ -1,6 +1,6 @@
 {
   "name": "ngx-xstate",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "XState utilities for Angular",
   "license": "MIT",
   "keywords": [
