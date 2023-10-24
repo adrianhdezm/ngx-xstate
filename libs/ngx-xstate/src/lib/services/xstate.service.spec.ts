@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { XStateService } from './xstate.service';
-import { StateFrom, createMachine } from 'xstate';
+import { createMachine } from 'xstate';
 
 describe('XStateService', () => {
   let service: XStateService;
