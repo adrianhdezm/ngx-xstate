@@ -1,0 +1,35 @@
+name: npm package
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.node-version'
+      - run: npm ci
+      - run: npx nx run ngx-xstate:lint
+      - run: npx nx run ngx-xstate:build
+      - run: npx nx run ngx-xstate:test
+
+  publish-npm:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.node-version'
+          registry-url: https://registry.npmjs.org/
+      - run: npm ci
+      - run: npx nx run ngx-xstate:build
+      - run: npm publish
+        working-directory: ./dist/libs/ngx-xstate
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
