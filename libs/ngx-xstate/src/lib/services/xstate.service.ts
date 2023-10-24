@@ -11,11 +11,9 @@ export class XStateService {
     machine: T,
     options?: Partial<MachineOptionsFrom<T>> & Pick<Partial<InterpreterOptions>, 'devTools'>
   ) {
-    const _stateSubject = new BehaviorSubject<StateFrom<T> | null>(null);
+    // Initialize the stateSubject with machine initial state
+    const _stateSubject = new BehaviorSubject<StateFrom<T>>(machine.initialState as StateFrom<T>);
     const state$ = _stateSubject.asObservable();
-
-    // Keep track of the initial state
-    _stateSubject.next(machine.initialState as StateFrom<T>);
 
     // Create local machine using the machine and options
     const { devTools, ...machineOptions } = options || {};
