@@ -57,6 +57,7 @@ export class XStateService<TMachine extends AnyStateMachine> {
     // Return the state$, send and stop functions
     return {
       state$: this.stateSubject.asObservable(),
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       send: this.service!.send,
       service: this.service,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
