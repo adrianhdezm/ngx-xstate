@@ -1,12 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { NgxXstateModule, XStateService } from 'ngx-xstate';
+import { NgxXStateModule, XStateService } from 'ngx-xstate';
 import { dataMachine } from './app.machine';
 import { CommonModule } from '@angular/common';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, HttpClientModule, NgxXstateModule],
+  imports: [CommonModule, HttpClientModule, NgxXStateModule],
   selector: 'ngx-xstate-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],

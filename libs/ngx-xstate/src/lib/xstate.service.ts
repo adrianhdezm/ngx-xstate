@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { interpret, AnyStateMachine, StateFrom, State } from 'xstate';
-import { NgxXstateModule } from './ngx-xstate.module';
+import { NgxXStateModule } from './ngx-xstate.module';
 import { RestParams, UseMachineReturn } from './types';
 
 @Injectable({
-  providedIn: NgxXstateModule,
+  providedIn: NgxXStateModule,
 })
 export class XStateService {
   useMachine<TMachine extends AnyStateMachine>(machine: TMachine, ...[options = {}]: RestParams<TMachine>): UseMachineReturn<TMachine> {

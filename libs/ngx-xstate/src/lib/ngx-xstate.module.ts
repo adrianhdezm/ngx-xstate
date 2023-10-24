@@ -3,6 +3,6 @@ import { CommonModule } from '@angular/common';
 
 @NgModule({
   imports: [CommonModule],
-  providers: [NgxXstateModule],
+  providers: [NgxXStateModule],
 })
-export class NgxXstateModule {}
+export class NgxXStateModule {}
