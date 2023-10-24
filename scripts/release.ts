@@ -6,7 +6,7 @@ import * as fs from 'fs';
 const rootDir: string = path.join(__dirname, '..');
 const pkgFilePath: string = path.join(rootDir, 'package.json');
 const packageJson: Record<string, unknown> = JSON.parse(fs.readFileSync(pkgFilePath).toString());
-const libPkgFilePath: string = path.join(rootDir, 'dist/libs/ngx-xstate', 'package.json');
+const libPkgFilePath: string = path.join(rootDir, 'libs/ngx-xstate', 'package.json');
 const libPackageJson: Record<string, unknown> = JSON.parse(fs.readFileSync(libPkgFilePath).toString());
 const pkgLockFilePath: string = path.join(rootDir, 'package-lock.json');
 const packageLockJson: Record<string, unknown> = JSON.parse(fs.readFileSync(pkgLockFilePath).toString());
