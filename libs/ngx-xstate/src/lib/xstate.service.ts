@@ -37,7 +37,7 @@ export class XStateService {
           _stateSubject.next(state as StateFrom<TMachine>);
         }
       })
-      .start(rehydratedState ? new State(rehydratedState) : undefined);
+      .start(rehydratedState ? initialState : undefined);
 
     // Return the state$, send and stop functions
     return {
