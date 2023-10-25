@@ -1,23 +1,23 @@
 import { createMachine, assign } from 'xstate';
 
-interface DataMachineContext {
+interface DataListMachineContext {
   data: Record<string, unknown>[];
   error: Error | null;
 }
 
-type DataMachineEvent =
+type DataListMachineEvent =
   | { type: 'FETCH' }
   | { type: 'RETRY' }
   | { type: 'LOADED'; data: Record<string, unknown>[] }
   | { type: 'ERROR'; message: string };
 
-export const dataMachine = createMachine(
+export const dataListMachine = createMachine(
   {
-    id: 'dataMachine',
+    id: 'dataListMachine',
     predictableActionArguments: true,
     schema: {
-      context: {} as DataMachineContext,
-      events: {} as DataMachineEvent,
+      context: {} as DataListMachineContext,
+      events: {} as DataListMachineEvent,
     },
     initial: 'idle',
     context: {

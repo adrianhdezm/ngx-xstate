@@ -22,7 +22,7 @@ To use `ngx-xstate` , create a new component inside your angular project. Create
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { NgxXstateModule, XStateService } from 'ngx-xstate';
+import { NgxXStateModule, XStateService } from 'ngx-xstate';
 import { createMachine } from 'xstate';
 
 type Data = Record<string, unknown>;
@@ -76,8 +76,8 @@ export const dataMachine = createMachine({
 
 @Component({
   standalone: true,
-  imports: [CommonModule, HttpClientModule, NgxXstateModule],
-  selector: 'ngx-xstate-root',
+  imports: [CommonModule, HttpClientModule, NgxXStateModule],
+  selector: 'example-app',
   template: `
     <h1>Hello XState from Angular!</h1>
     <button (click)="actor.send({ type: 'FETCH' })">Load</button>
@@ -96,7 +96,7 @@ export const dataMachine = createMachine({
 export class AppComponent {
   http = inject(HttpClient);
 
-  actor = inject(XStateService<typeof dataMachine>).useMachine(dataMachine, {
+  actor = inject(XStateService).useMachine<typeof dataMachine>(dataMachine, {
     services: {
       fetchData: () => (send) => {
         this.http.get<Data[]>('https://jsonplaceholder.typicode.com/posts').subscribe((data) => {

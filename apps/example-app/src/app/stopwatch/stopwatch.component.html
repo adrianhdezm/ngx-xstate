@@ -1,0 +1,11 @@
+<h1>Stopwatch Example Machine</h1>
+<div>
+  <button (click)="actor.send({ type: 'START' })">Start</button>
+  <button (click)="actor.send({ type: 'STOP' })">Stop</button>
+</div>
+<hr />
+<ng-container *ngIf="{ state: (actor.state$ | async)! } as vm" [ngSwitch]="true">
+  <ng-container *ngSwitchCase="vm.state.matches('idle')">Waiting...</ng-container>
+  <ng-container *ngSwitchCase="vm.state.matches('running')">Running</ng-container>
+  <ng-container *ngSwitchCase="vm.state.matches('stopped')">Stopped</ng-container>
+</ng-container>

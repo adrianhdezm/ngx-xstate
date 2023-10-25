@@ -1,18 +1,13 @@
 import { DestroyRef, Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Subject, from, takeUntil } from 'rxjs';
 import { interpret, AnyStateMachine, StateFrom, State, InterpreterFrom } from 'xstate';
-import { NgxXStateModule } from './ngx-xstate.module';
 import { RestParams, UseMachineReturn } from './types';
 
-@Injectable({
-  providedIn: NgxXStateModule,
-})
-export class XStateService<TMachine extends AnyStateMachine> {
-  private service!: InterpreterFrom<TMachine>;
-  private stateSubject!: BehaviorSubject<StateFrom<TMachine>>;
+@Injectable()
+export class XStateService {
   destroyRef = inject(DestroyRef);
 
-  useMachine(machine: TMachine, ...[options = {}]: RestParams<TMachine>): UseMachineReturn<TMachine> {
+  useMachine<TMachine extends AnyStateMachine>(machine: TMachine, ...[options = {}]: RestParams<TMachine>): UseMachineReturn<TMachine> {
     const { context, guards, actions, activities, services, delays, state: rehydratedState, ...interpreterOptions } = options;
     const machineConfig = {
       context,
@@ -31,35 +26,40 @@ export class XStateService<TMachine extends AnyStateMachine> {
 
     // Initialize the stateSubject with machine initial state
     const initialState = rehydratedState ? new State(rehydratedState) : _machine.initialState;
-    this.stateSubject = new BehaviorSubject(initialState as StateFrom<TMachine>);
+    const stateSubject = new BehaviorSubject(initialState as StateFrom<TMachine>);
 
     // Interpret the service
-    this.service = interpret(_machine, interpreterOptions) as InterpreterFrom<TMachine>;
+    const service = interpret(_machine, interpreterOptions) as InterpreterFrom<TMachine>;
 
-    // send state updates to the subject
+    // Handle done and destroy events
     const destroyed = new Subject<void>();
     this.destroyRef.onDestroy(() => {
       destroyed.next();
       destroyed.complete();
     });
 
-    from(this.service)
+    service.onDone(() => {
+      destroyed.next();
+      destroyed.complete();
+    });
+
+    // send state updates to the subject
+    from(service)
       .pipe(takeUntil(destroyed))
       .subscribe((state) => {
         if (state.changed) {
-          this.stateSubject.next(state as StateFrom<TMachine>);
+          stateSubject.next(state as StateFrom<TMachine>);
         }
       });
 
     // Start the service
-    this.service.start(rehydratedState ? initialState : undefined);
+    service.start(rehydratedState ? initialState : undefined);
 
     // Return the state$, send and stop functions
     return {
-      state$: this.stateSubject.asObservable(),
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      send: this.service!.send,
-      service: this.service,
+      state$: stateSubject.asObservable(),
+      send: service.send,
+      service,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
   }

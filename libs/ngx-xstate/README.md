@@ -22,7 +22,7 @@ To use `ngx-xstate` , create a new component inside your angular project. Create
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { NgxXstateModule, XStateService } from 'ngx-xstate';
+import { NgxXStateModule, XStateService } from 'ngx-xstate';
 import { createMachine } from 'xstate';
 
 type Data = Record<string, unknown>;
@@ -76,8 +76,8 @@ export const dataMachine = createMachine({
 
 @Component({
   standalone: true,
-  imports: [CommonModule, HttpClientModule, NgxXstateModule],
-  selector: 'ngx-xstate-root',
+  imports: [CommonModule, HttpClientModule, NgxXStateModule],
+  selector: 'example-app',
   template: `
     <h1>Hello XState from Angular!</h1>
     <button (click)="actor.send({ type: 'FETCH' })">Load</button>
@@ -96,7 +96,7 @@ export const dataMachine = createMachine({
 export class AppComponent {
   http = inject(HttpClient);
 
-  actor = inject(XStateService<typeof dataMachine>).useMachine(dataMachine, {
+  actor = inject(XStateService).useMachine<typeof dataMachine>(dataMachine, {
     services: {
       fetchData: () => (send) => {
         this.http.get<Data[]>('https://jsonplaceholder.typicode.com/posts').subscribe((data) => {
@@ -112,6 +112,99 @@ export class AppComponent {
 }
 ```
 
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { NgxXstateModule, XStateService } from 'ngx-xstate';
+import { createMachine } from 'xstate';
+
+type Data = Record<string, unknown>;
+
+interface DataMachineContext {
+data: Data[];
+error: Error | null;
+}
+
+type DataMachineEvent = { type: 'FETCH' } | { type: 'RETRY' } | { type: 'LOADED'; data: Data[] } | { type: 'ERROR'; message: string };
+
+export const dataMachine = createMachine({
+id: 'dataMachine',
+predictableActionArguments: true,
+schema: {
+context: {} as DataMachineContext,
+events: {} as DataMachineEvent,
+},
+initial: 'idle',
+context: {
+data: [],
+error: null,
+},
+states: {
+idle: { on: { FETCH: 'loading' } },
+loading: {
+invoke: {
+src: 'fetchData',
+onError: {
+target: 'failure',
+actions: assign({
+error: (_, event) => new Error(event.data),
+}),
+},
+},
+on: {
+LOADED: {
+target: 'success',
+actions: [
+assign({
+data: (_, event) => event.data,
+}),
+],
+},
+},
+},
+success: {},
+failure: { on: { RETRY: 'loading' } },
+},
+});
+
+@Component({
+standalone: true,
+imports: [CommonModule, HttpClientModule, NgxXstateModule],
+selector: 'ngx-xstate-root',
+template: `    <h1>Hello XState from Angular!</h1>
+    <button (click)="actor.send({ type: 'FETCH' })">Load</button>
+    <hr />
+    <ng-container *ngIf="{ state: (actor.state$ | async)! } as vm" [ngSwitch]="true">
+      <ng-container *ngSwitchCase="vm.state.matches('loading')">Loading...</ng-container>
+      <ng-container *ngSwitchCase="vm.state.matches('success')">
+        <div *ngFor="let item of vm.state.context.data">
+          {{ item['title'] }}
+        </div>
+      </ng-container>
+      <ng-container *ngSwitchCase="vm.state?.matches('failure')">{{ vm.state.context.error?.message }}</ng-container>
+    </ng-container>
+ `,
+})
+export class AppComponent {
+http = inject(HttpClient);
+
+actor = inject(XStateService<typeof dataMachine>).useMachine(dataMachine, {
+services: {
+fetchData: () => (send) => {
+this.http.get<Data[]>('https://jsonplaceholder.typicode.com/posts').subscribe((data) => {
+return send({
+type: 'LOADED',
+data,
+});
+});
+},
+},
+devTools: true,
+});
+}
+
+```
+
 ## Contributing
 
 If you're interested in contributing to `ngx-xstate`, please feel free to submit a pull request or open an issue on GitHub. We welcome all contributions and feedback!
@@ -119,3 +212,4 @@ If you're interested in contributing to `ngx-xstate`, please feel free to submit
 ## License
 
 `ngx-xstate` is licensed under the MIT license. See the LICENSE file for more information.
+```

@@ -1,12 +1,5 @@
 <h1>Hello XState from Angular!</h1>
-<button (click)="actor.send({ type: 'FETCH' })">Load</button>
-<hr />
-<ng-container *ngIf="{ state: (actor.state$ | async)! } as vm" [ngSwitch]="true">
-  <ng-container *ngSwitchCase="vm.state.matches('loading')">Loading...</ng-container>
-  <ng-container *ngSwitchCase="vm.state.matches('success')">
-    <div *ngFor="let item of vm.state.context.data">
-      {{ item['title'] }}
-    </div>
-  </ng-container>
-  <ng-container *ngSwitchCase="vm.state.matches('failure')">{{ vm.state.context.error?.message }}</ng-container>
-</ng-container>
+<div>
+  <example-data-list />
+  <example-stopwatch />
+</div>

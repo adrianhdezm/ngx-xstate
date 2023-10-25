@@ -2,29 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { XStateService } from './xstate.service';
 import { createMachine } from 'xstate';
 
-const testMachine = createMachine({
-  id: 'testMachine',
-  predictableActionArguments: true,
-  initial: 'idle',
-  states: {
-    idle: {
-      on: {
-        START: 'running',
-      },
-    },
-    running: {
-      on: {
-        STOP: 'stopped',
-      },
-    },
-    stopped: {
-      type: 'final',
-    },
-  },
-});
-
 describe('XStateService', () => {
-  let service: XStateService<typeof testMachine>;
+  let service: XStateService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -38,8 +17,29 @@ describe('XStateService', () => {
   });
 
   it('should interpret the machine and provide state updates', (done) => {
+    const testMachine = createMachine({
+      id: 'testMachine',
+      predictableActionArguments: true,
+      initial: 'idle',
+      states: {
+        idle: {
+          on: {
+            START: 'running',
+          },
+        },
+        running: {
+          on: {
+            STOP: 'stopped',
+          },
+        },
+        stopped: {
+          type: 'final',
+        },
+      },
+    });
+
     // Use the machine with the service
-    const { state$, send, service: actor } = service.useMachine(testMachine);
+    const { state$, send, service: actor } = service.useMachine<typeof testMachine>(testMachine);
 
     // Subscribe to state updates and check the transitions
     state$.subscribe((state) => {
